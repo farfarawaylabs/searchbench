@@ -1,0 +1,12 @@
+# Local Worker secrets for `npm run dev` (gitignored — never commit real keys).
+# Production: npx wrangler secret put <NAME>
+
+EXA_API_KEY=
+FIRECRAWL_API_KEY=
+CERAMIC_API_KEY=
+SERPER_API_KEY=
+
+# Optional judge overrides (default: Workers AI binding, no key needed).
+# JUDGE_OPENAI_API_KEY=
+# JUDGE_ANTHROPIC_API_KEY=
+# JUDGE_MODEL=
