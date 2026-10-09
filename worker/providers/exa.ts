@@ -9,16 +9,17 @@ interface ExaItem {
   text?: string;
 }
 
-/** Exa AI search. Docs: https://docs.exa.ai */
+/** Exa AI + news search. Docs: https://docs.exa.ai
+ *  News mode uses the same POST /search endpoint with `category: "news"`. */
 export const exaProvider: SearchProvider = {
   id: "exa",
   name: "Exa",
   tagline: "Neural search over the live web",
   docsUrl: "https://docs.exa.ai",
   envKey: "EXA_API_KEY",
-  modes: ["web"],
+  modes: ["web", "news"],
 
-  async search(query, { numResults, apiKey }): Promise<ProviderResult> {
+  async search(query, { numResults, apiKey, mode }): Promise<ProviderResult> {
     const started = Date.now();
     const res = await fetch("https://api.exa.ai/search", {
       method: "POST",
@@ -27,6 +28,7 @@ export const exaProvider: SearchProvider = {
         query,
         type: "auto",
         numResults,
+        ...(mode === "news" ? { category: "news" } : {}),
         contents: { highlights: true, text: { maxCharacters: 1200 } },
       }),
       signal: AbortSignal.timeout(25_000),

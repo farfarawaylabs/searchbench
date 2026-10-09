@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { runRequestSchema, type Run } from "../shared/schemas";
 import { runToMarkdown } from "../worker/export";
 import { getProvider, listProviders } from "../worker/providers";
+import { exaProvider } from "../worker/providers/exa";
 import { extractFirecrawlItems } from "../worker/providers/firecrawl";
 import { judgeConfig } from "../worker/judge";
 import {
@@ -26,12 +27,12 @@ describe("provider registry", () => {
     expect(getProvider("nope")).toBeUndefined();
   });
 
-  it("declares news support only for serper and firecrawl", () => {
+  it("declares news support for exa, serper, and firecrawl", () => {
     const news = listProviders()
       .filter((p) => p.modes.includes("news"))
       .map((p) => p.id)
       .sort();
-    expect(news).toEqual(["firecrawl", "serper"]);
+    expect(news).toEqual(["exa", "firecrawl", "serper"]);
     for (const p of listProviders()) expect(p.modes).toContain("web");
   });
 });
@@ -120,6 +121,34 @@ describe("serper response shapes", () => {
     ];
     expect(extractSerperNews({ news })).toEqual(news);
     expect(extractSerperNews({ organic: [] })).toEqual([]);
+  });
+});
+
+describe("exa news mode", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("sends category news on the same /search endpoint in news mode only", async () => {
+    const seen: { url: unknown; body: Record<string, unknown> }[] = [];
+    vi.stubGlobal(
+      "fetch",
+      async (url: unknown, init?: { body?: unknown }) => {
+        seen.push({
+          url,
+          body: JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>,
+        });
+        return new Response(JSON.stringify({ results: [] }), { status: 200 });
+      },
+    );
+
+    await exaProvider.search("latest AI news", { numResults: 5, apiKey: "k", mode: "news" });
+    await exaProvider.search("latest AI news", { numResults: 5, apiKey: "k", mode: "web" });
+
+    expect(seen).toHaveLength(2);
+    expect(seen[0].url).toBe("https://api.exa.ai/search");
+    expect(seen[0].body.category).toBe("news");
+    expect(seen[1].body).not.toHaveProperty("category");
   });
 });
 

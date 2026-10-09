@@ -204,7 +204,8 @@ export function ComparePage() {
             <p className="mt-1 font-light text-muted-ink">
               {mode === "news" ? (
                 <>
-                  News search compares Serper and Firecrawl. Add{" "}
+                  News search compares Exa, Serper, and Firecrawl. Add{" "}
+                  <code className="font-mono text-xs">EXA_API_KEY</code>,{" "}
                   <code className="font-mono text-xs">SERPER_API_KEY</code> and{" "}
                   <code className="font-mono text-xs">FIRECRAWL_API_KEY</code> via{" "}
                   <code className="font-mono text-xs">wrangler secret put</code> or{" "}

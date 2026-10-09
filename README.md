@@ -58,13 +58,13 @@ The app serves at `*.workers.dev`. `compatibility_date` is the scaffold date.
 
 | Secret | Provider |
 | --- | --- |
-| `EXA_API_KEY` | Exa (`x-api-key` header, web only) |
+| `EXA_API_KEY` | Exa (`x-api-key` header, web + news via `category: "news"`) |
 | `FIRECRAWL_API_KEY` | Firecrawl (`Authorization: Bearer`, web + news via `sources: ["news"]`) |
 | `CERAMIC_API_KEY` | Ceramic (`Authorization: Bearer`, `POST https://api.ceramic.ai/search`, web only) |
 | `SERPER_API_KEY` | Serper (`X-API-KEY`, `POST google.serper.dev/search` + `/news`, web + news) |
 
 The Compare page has two tabs: **Regular search** (all configured web providers)
-and **News search** (Serper vs. Firecrawl news). Runs store their `mode`, shown
+and **News search** (Exa, Serper, and Firecrawl news). Runs store their `mode`, shown
 in history and replay; the judge weighs recency more heavily in news mode.
 
 Provider API keys **never touch the client** — all provider calls happen in the
