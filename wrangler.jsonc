@@ -23,7 +23,7 @@
 		{
 			"binding": "DB",
 			"database_name": "searchbench",
-			"database_id": "00000000-0000-0000-0000-000000000000",
+			"database_id": "d42ac166-76cc-4f63-b439-5efa85d32f25",
 			"migrations_dir": "migrations"
 		}
 	]
